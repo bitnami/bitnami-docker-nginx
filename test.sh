@@ -37,11 +37,11 @@ cleanup_environment
 
   # http connection
   run curl_client default -i http://$APP_NAME:80
-  [[ "$output" =~ "It works!" ]]
+  [[ "$output" =~ "Welcome to nginx!" ]]
 
   # https connection
   run curl_client default -i -k https://$APP_NAME:443
-  [[ "$output" =~ "It works!" ]]
+  [[ "$output" =~ "Welcome to nginx!" ]]
 }
 
 @test "Logs to stdout" {
