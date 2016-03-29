@@ -13,6 +13,9 @@ ENV PATH=$BITNAMI_APP_DIR/sbin:/opt/bitnami/common/bin:$PATH
 
 RUN bitnami-pkg unpack $BITNAMI_APP_NAME-$BITNAMI_APP_VERSION
 
+# hack: should be present after unpack
+RUN mkdir -p $BITNAMI_APP_DIR/conf/vhosts
+
 # these symlinks should be setup by harpoon at unpack
 RUN mkdir -p $BITNAMI_APP_VOL_PREFIX && \
     ln -s $BITNAMI_APP_DIR/html /app && \
