@@ -4,7 +4,7 @@
 APP_NAME=nginx
 VOL_PREFIX=/bitnami/$APP_NAME
 VOLUMES=
-SLEEP_TIME=5
+SLEEP_TIME=10
 load tests/docker_helper
 
 # Cleans up all running/stopped containers and host mounted volumes
