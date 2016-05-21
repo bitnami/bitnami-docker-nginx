@@ -3,7 +3,6 @@ MAINTAINER Bitnami <containers@bitnami.com>
 
 ENV BITNAMI_APP_NAME=nginx \
     BITNAMI_APP_USER=daemon \
-    BITNAMI_APP_GROUP=daemon \
     BITNAMI_APP_DAEMON=nginx \
     BITNAMI_APP_VERSION=1.9.15-1
 
