@@ -2,14 +2,13 @@
 
 # source the helper script
 APP_NAME=nginx
-VOL_PREFIX=/bitnami/$APP_NAME
-VOLUMES=
+VOLUMES=/bitnami/$APP_NAME
 SLEEP_TIME=10
 load tests/docker_helper
 
 # Cleans up all running/stopped containers and host mounted volumes
 cleanup_environment() {
-  container_remove_full default
+  container_remove default
 }
 
 # Teardown called at the end of each test
