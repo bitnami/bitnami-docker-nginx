@@ -3,7 +3,7 @@
 # source the helper script
 APP_NAME=nginx
 VOLUMES=/bitnami/$APP_NAME
-SLEEP_TIME=10
+SLEEP_TIME=20
 load tests/docker_helper
 
 # Cleans up all running/stopped containers and host mounted volumes
