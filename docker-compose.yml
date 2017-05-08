@@ -8,6 +8,8 @@ services:
       - '443:443'
     volumes:
       - 'nginx_data:/bitnami/nginx'
+    label:
+      kompose.service.type: nodeport
 
 volumes:
   nginx_data:
