@@ -1,6 +1,8 @@
 FROM bitnami/minideb-extras:jessie-r14
 MAINTAINER Bitnami <containers@bitnami.com>
 
+LABEL io.k8s.kompose="https://raw.githubusercontent.com/sebgoa/bitnami-docker-nginx/master/kubernetes.yml"
+
 ENV BITNAMI_APP_NAME="nginx" \
     BITNAMI_IMAGE_VERSION="1.12.0-r1" \
     NGINX_HTTPS_PORT="443" \
