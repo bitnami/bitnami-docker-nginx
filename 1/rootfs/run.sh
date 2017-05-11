@@ -3,9 +3,10 @@
 echo "----"
 echo "BITNAMI nginx container, source available at https://github.com/bitnami/bitnami-docker-nginx"
 echo "This container is configured by NAMI an open source tool available at https://github.com/bitnami/nami"
-echo "Join us on SLACK: http://slack.oss.bitnami.com
+echo "Join us on SLACK: http://slack.oss.bitnami.com"
 echo "----"
 
+# keeping this remove the functions and helpers sourcing
 # pretty message
 RESET='\033[0m'
 GREEN='\033[38;5;2m'
@@ -25,12 +26,12 @@ ARGS=
 nami initialize nginx --inputs-file=/nginx-inputs.json
 info "Starting nginx... "
 
-chown -R :daemon /opt/bitnami/nginx/html || true
+# able to modify config and then build container, otherwise config gets overwritten
+# need to check proper use of volumes
 
-# redirect nginx logs to stdout/stderr
-ln -sf /dev/stdout /opt/bitnami/nginx/logs/access.log
-ln -sf /dev/stderr /opt/bitnami/nginx/logs/error.log
+cp /nginx.conf /opt/bitnami/nginx/conf/nginx.conf
 
 info "Starting ${DAEMON}..."
 
-${EXEC} ${ARGS} -g 'daemon off;'
+# daemon off moved to config
+${EXEC} ${ARGS}
