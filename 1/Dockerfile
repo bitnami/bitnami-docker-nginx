@@ -11,7 +11,7 @@ ENV BITNAMI_APP_NAME="nginx" \
 RUN install_packages libc6 libpcre3 libssl1.0.0 zlib1g
 
 RUN HOME= bitnami-pkg unpack nginx-1.12.0-0 --checksum ff53d1268b5856952a896974b64f22db83e05a3d20e3fb7451253c29f91e6297 && \
-  mkdir /bitnami && chmod -R g+rwX /opt/bitnami/nginx /.nami /bitnami
+  mkdir /bitnami && chmod -R g+rwX /.nami /opt/bitnami/nginx /bitnami
 
 RUN ln -sf /dev/stdout /opt/bitnami/nginx/logs/access.log
 RUN ln -sf /dev/stderr /opt/bitnami/nginx/logs/error.log
