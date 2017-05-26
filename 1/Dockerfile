@@ -10,17 +10,17 @@ ENV BITNAMI_APP_NAME="nginx" \
 # Install required system packages and dependencies
 RUN install_packages libc6 libpcre3 libssl1.0.0 zlib1g
 
-RUN mkdir -p /.nami /bitnami && chmod -R g+rwX /opt/bitnami /.nami /bitnami
+RUN HOME= bitnami-pkg unpack nginx-1.12.0-0 --checksum ff53d1268b5856952a896974b64f22db83e05a3d20e3fb7451253c29f91e6297 && \
+  mkdir /bitnami && chmod -R g+rwX /opt/bitnami/nginx /.nami /bitnami
+
+RUN ln -sf /dev/stdout /opt/bitnami/nginx/logs/access.log
+RUN ln -sf /dev/stderr /opt/bitnami/nginx/logs/error.log
 RUN ln -sf /opt/bitnami/nginx/html /app
+
+COPY rootfs /
 
 # Drop privileges
 USER 1001
-
-RUN bitnami-pkg unpack nginx-1.12.0-0 --checksum ff53d1268b5856952a896974b64f22db83e05a3d20e3fb7451253c29f91e6297 -- --httpPort 8080 --httpsPort 8443
-RUN ln -sf /dev/stdout /opt/bitnami/nginx/logs/access.log
-RUN ln -sf /dev/stderr /opt/bitnami/nginx/logs/error.log
-
-COPY rootfs /
 
 EXPOSE 8080 8443
 
