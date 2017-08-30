@@ -35,7 +35,7 @@ jobs:
       - run:
           name: Build docker image
           command: |
-            curl -sL https://raw.githubusercontent.com/bitnami/test-infra/master/circle/docker-image-test.sh | bash -
+            curl -sL https://raw.githubusercontent.com/tompizmor/test-infra/centos-poc/circle/docker-image-test.sh | bash -
       - save_cache:
           key: cache-{{ .Branch }}-{{ epoch }}
           paths:
@@ -44,9 +44,9 @@ jobs:
           name: Publish docker image
           command: |
             if [ -n "${CIRCLE_TAG}" ]; then
-              curl -sL https://raw.githubusercontent.com/bitnami/test-infra/master/circle/docker-release-image.sh | bash -
+              curl -sL https://raw.githubusercontent.com/tompizmor/test-infra/centos-poc/circle/docker-release-image.sh | bash -
             elif [ "${CIRCLE_BRANCH}" == "master" ]; then
-              curl -sL https://raw.githubusercontent.com/bitnami/test-infra/master/circle/docker-development-image.sh | bash -
+              curl -sL https://raw.githubusercontent.com/tompizmor/test-infra/centos-poc/circle/docker-development-image.sh | bash -
             fi
 
 deployment:
