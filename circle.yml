@@ -6,6 +6,7 @@ jobs:
       - image: docker:17.06.0-ce-git
         environment:
           RELEASE_SERIES_LIST: "1.12"
+          SUPPORTED_BASE_IMAGES: "debian,centos"
           LATEST_STABLE: "1.12"
           IMAGE_NAME: nginx
           CHART_NAME: nginx
