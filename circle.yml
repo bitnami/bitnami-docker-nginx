@@ -32,6 +32,7 @@ jobs:
       - run:
           name: Build docker image
           command: |
+            env
             curl -sL https://raw.githubusercontent.com/tompizmor/test-infra/centos-poc/circle/docker-image-test.sh | bash -
       - save_cache:
           key: cache-{{ .Branch }}-{{ epoch }}
