@@ -6,7 +6,7 @@ ENV BITNAMI_PKG_CHMOD="-R g+rwX" \
     HOME="/"
 
 # Install required system packages and dependencies
-RUN yum install libc pcre openlibssl zlib
+RUN yum install -y libc pcre openlibssl zlib
 
 RUN bitnami-pkg unpack nginx-1.12.1-2 --checksum a31c757d28bfc6c430223d634c6d3849291a679d1128f50cad1246d4d6eb04a3
 

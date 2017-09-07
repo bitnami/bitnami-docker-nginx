@@ -44,9 +44,6 @@ jobs:
       - deploy:
           name: Publish docker image
           command: |
-            export CIRCLE_TAG=1.12.1-rTest3
-            echo ${CIRCLE_TAG}
-            echo ${CIRCLE_BRANCH}
             if [ -n "${CIRCLE_TAG}" ]; then
               curl -sL https://raw.githubusercontent.com/tompizmor/test-infra/centos-poc/circle/docker-release-image.sh | bash -
             elif [ "${CIRCLE_BRANCH}" == "master" ]; then
