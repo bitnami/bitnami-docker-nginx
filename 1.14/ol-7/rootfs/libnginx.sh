@@ -216,6 +216,6 @@ nginx_setup() {
 
     debug "Updating 'nginx.conf' based on user configuration..."
     if [[ -n "${NGINX_HTTP_PORT_NUMBER:-}" ]]; then
-      sed -i -r "s/(listen\s+)8080/\1${NGINX_HTTP_PORT_NUMBER}/g" ${NGINX_CONFDIR}/nginx.conf
+      sed -i -r "s/(listen\s+)[0-9]{1,4};/\1${NGINX_HTTP_PORT_NUMBER};/g" ${NGINX_CONFDIR}/nginx.conf
     fi
 }
