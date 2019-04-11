@@ -108,18 +108,41 @@ EOF
 #   None
 #########################
 nginx_default_config() {
-    # Unset HTTP_PROXY header to protect vs HTTPPOXY vulnerability
-    # Ref: https://www.digitalocean.com/community/tutorials/how-to-protect-your-server-against-the-httpoxy-vulnerability
+    debug "Rendering 'nginx.conf.tpl' template..."
+    render-template "${NGINX_TEMPLATES_DIR}/nginx.conf.tpl" > "${NGINX_CONFDIR}/nginx.conf"
+}
+
+########################
+# Unset HTTP_PROXY header to protect vs HTTPPOXY vulnerability
+# Ref: https://www.digitalocean.com/community/tutorials/how-to-protect-your-server-against-the-httpoxy-vulnerability
+# Globals:
+#   NGINX_*
+# Arguments:
+#   None
+# Returns:
+#   None
+#########################
+nginx_protect_httpoxy_vuln() {
     debug "Unsetting HTTP_PROXY header..."
     echo '# Unset the HTTP_PROXY header' >> "${NGINX_CONFDIR}/fastcgi_params"
     echo 'fastcgi_param  HTTP_PROXY         "";' >> "${NGINX_CONFDIR}/fastcgi_params"
-    debug "Rendering 'nginx.conf.tpl' template..."
-    render-template "${NGINX_TEMPLATES_DIR}/nginx.conf.tpl" > "${NGINX_CONFDIR}/nginx.conf"
-    # Users can mount their html sites at /app
-    mv "${NGINX_BASEDIR}/html" /app
-    ln -sf /app "${NGINX_BASEDIR}/html"
-    # Users can mount their certificates at /certs
-    ln -sf /certs "${NGINX_CONFDIR}/bitnami/certs"
+}
+
+########################
+# Prepare directories for users to mount its static files and certificates
+# Globals:
+#   NGINX_*
+# Arguments:
+#   None
+# Returns:
+#   None
+#########################
+nginx_prepare_directories() {
+  # Users can mount their html sites at /app
+  mv "${NGINX_BASEDIR}/html" /app
+  ln -sf /app "${NGINX_BASEDIR}/html"
+  # Users can mount their certificates at /certs
+  ln -sf /certs "${NGINX_CONFDIR}/bitnami/certs"
 }
 
 ########################
@@ -177,8 +200,7 @@ nginx_setup() {
     fi
     # Persisted configuration files from old versions
     if [[ -f "$NGINX_VOLUME/conf/nginx.conf" ]]; then
-        error "'nginx.conf' was found in a legacy location: ${NGINX_VOLUME}/conf/nginx.conf"
-        error "  Please use ${NGINX_CONFDIR}/nginx.conf instead."
+        error "A 'nginx.conf' file was found inside '${NGINX_VOLUME}/conf'. This configuration is not supported anymore. Please mount the configuration file at '${NGINX_CONFDIR}/nginx.conf' instead."
         exit 1
     fi
     if ! is_dir_empty "$NGINX_VOLUME/conf/vhosts"; then
@@ -188,12 +210,12 @@ nginx_setup() {
         debug "Moving vhosts config files to new location..."
         cp -r "$NGINX_VOLUME/conf/vhosts" "$NGINX_CONFDIR"
     fi
-    for dir in "$NGINX_TMPDIR" "$NGINX_CONFDIR" "${NGINX_CONFDIR}/vhosts"; do
-        ensure_dir_exists "$dir" "${NGINX_DAEMON_USER:-}"
-    done
-    
-    debug "Tuning 'nginx.conf' based on user configuration..."
+    if am_i_root && [[ -n "${NGINX_DAEMON_USER:-}" ]]; then
+        chown "${NGINX_DAEMON_USER:-}" "${NGINX_CONFDIR}" "${NGINX_CONFDIR}/vhosts" "$NGINX_TMPDIR"
+    fi
+
+    debug "Updating 'nginx.conf' based on user configuration..."
     if [[ -n "${NGINX_HTTP_PORT_NUMBER:-}" ]]; then
-      sed -i -r "s/(listen .*)8080/\1${NGINX_HTTP_PORT_NUMBER}/g" ${NGINX_CONFDIR}/nginx.conf
+      sed -i -r "s/(listen\s+)8080/\1${NGINX_HTTP_PORT_NUMBER}/g" ${NGINX_CONFDIR}/nginx.conf
     fi
 }

@@ -6,7 +6,7 @@ USER 0
 RUN install_packages vim
 
 ## Modify NGINX config file to include my custom configuration
-RUN sed -i -r "s#(include .*mime.types;)#\1\n    include  \"custom/*.conf\";#g" /opt/bitnami/nginx/conf/nginx.conf
+RUN sed -i -r "s#((\s+)include(\s+)mime.types;)#\1\n\2include\3\"custom/*.conf\";#g" /opt/bitnami/nginx/conf/nginx.conf
 RUN ln -sf /custom /opt/bitnami/nginx/conf/custom
 VOLUME /custom
 

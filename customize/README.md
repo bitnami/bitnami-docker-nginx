@@ -30,7 +30,7 @@ CMD [ "/run.sh" ]
 We can identify several sections within the Dockerfile:
 
 - A section where all the required components are installed.
-- A section where the the assets are prepared.
+- A section where all the components are statically configured.
 - A section where the env. variables, the ports to be exposed, the working directory and the user are defined.
   - Note that once the user is set to 1001, unprivileged commands cannot be executed anymore.
 - A section where the entrypoint and command used to start the service are declared.
