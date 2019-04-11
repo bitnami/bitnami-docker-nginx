@@ -293,7 +293,7 @@ You can configure the containers [logging driver](https://docs.docker.com/engine
 
 # Customizing this image
 
-Refer to the [customize instructions](./custom/README.md) for more information about how to extend this image.
+Refer to the [customize instructions](./custom/README.md) for more information on how to extend this image.
 
 # Maintenance
 
