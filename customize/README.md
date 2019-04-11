@@ -33,7 +33,7 @@ We can identify several sections within the Dockerfile:
 - A section where the the assets are prepared.
 - A section where the env. variables, the ports to be exposed, the working directory and the user are defined.
   - Note that once the user is set to 1001, unprivileged actions cannot be done anymore.
-- A section where the entrypoint and command used to initialize/start the containers are declared.
+- A section where the entrypoint and command used to start the service are declared.
   - Take into account these actions are not executed until the container is started.
 
 ## Extending the Bitnami NGINX Docker Image
