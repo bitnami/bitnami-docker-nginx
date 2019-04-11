@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  nginx:
+    build: .
+    ports:
+      - '80:8181'
+      - '443:8443'
+    depends_on:
+      - cloner
+    volumes:
+      - ./config/my_vhost.conf:/opt/bitnami/nginx/conf/vhosts/my_vhost.conf:ro
+      - ./certs:/certs
+      - ./config/proxy.conf:/custom/proxy.conf:ro
+      - data:/app
+  cloner:
+    image: 'bitnami/git:latest'
+    command:
+      - clone
+      - https://github.com/cloudacademy/static-website-example
+      - /app
+    volumes:
+      - data:/app
+volumes:
+  data:
+    driver: local

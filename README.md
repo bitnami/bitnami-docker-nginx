@@ -122,7 +122,7 @@ Access your web server in the browser by navigating to [http://localhost:9000](h
 
 ## Adding custom virtual hosts
 
-The default `nginx.conf` includes virtual hosts placed in `/bitnami/nginx/conf/vhosts/`. You can mount a `my_vhost.conf` file containing your custom virtual hosts at this location.
+The default `nginx.conf` includes virtual hosts placed in `/opt/bitnami/nginx/conf/vhosts/`. You can mount a `my_vhost.conf` file containing your custom virtual hosts at this location.
 
 For example, in order add a vhost for `www.example.com`:
 
@@ -168,14 +168,15 @@ services:
 In your local computer, create a folder called `certs` and put your certificates files. Make sure you rename both files to `server.crt` and `server.key` respectively:
 
 ```bash
-$ mkdir /path/to/nginx-persistence/nginx/conf/bitnami/certs -p
-$ cp /path/to/certfile.crt /path/to/nginx-persistence/nginx/conf/bitnami/certs/server.crt
-$ cp /path/to/keyfile.key  /path/to/nginx-persistence/nginx/conf/bitnami/certs/server.key
+$ mkdir -p /path/to/nginx-persistence/certs
+$ cp /path/to/certfile.crt /path/to/nginx-persistence/certs/server.crt
+$ cp /path/to/keyfile.key  /path/to/nginx-persistence/certs/server.key
 ```
 
 ### Step 2: Provide a custom Virtual Host for SSL connections
 
-Write your `my_vhost.conf` file with the SSL configuration and the relative path to the certificates.
+Write your `my_vhost.conf` file with the SSL configuration and the relative path to the certificates:
+
 ```nginx
   server {
     listen       8443 ssl;
@@ -203,7 +204,7 @@ Run the NGINX Open Source image, mounting the certificates directory from your h
 ```bash
 $ docker run --name nginx \
   -v /path/to/my_vhost.conf:/opt/bitnami/nginx/conf/vhosts/my_vhost.conf:ro \
-  -v /path/to/nginx-persistence/nginx/conf/bitnami/certs:/bitnami/nginx/conf/bitnami/certs \
+  -v /path/to/nginx-persistence/certs:/certs \
   bitnami/nginx:latest
 ```
 
@@ -219,7 +220,8 @@ services:
     - '80:8080'
     - '443:8443'
     volumes:
-    - /path/to/nginx-persistence/nginx/conf/bitnami/certs:/bitnami/nginx/conf/bitnami/certs
+    - /path/to/nginx-persistence/certs:/certs
+    - /path/to/my_vhost.conf:/opt/bitnami/nginx/conf/vhosts/my_vhost.conf:ro
 ```
 
 ## Full configuration
@@ -229,7 +231,7 @@ The image looks for configurations in `/opt/bitnami/nginx/conf/nginx.conf`. You 
 
 ```bash
 $ docker run --name nginx \
-  -v /path/to/your_nginx.conf:/opt/bitnami/nginx/conf/nginx.conf \
+  -v /path/to/your_nginx.conf:/opt/bitnami/nginx/conf/nginx.conf:ro \
   bitnami/nginx:latest
 ```
 
@@ -244,7 +246,7 @@ services:
     ports:
       - '80:8080'
     volumes:
-      - /path/to/your_nginx.conf:/opt/bitnami/nginx/conf/nginx.conf
+      - /path/to/your_nginx.conf:/opt/bitnami/nginx/conf/nginx.conf:ro
 ```
 
 # Reverse proxy to other containers
@@ -288,6 +290,10 @@ $ docker-compose logs nginx
 ```
 
 You can configure the containers [logging driver](https://docs.docker.com/engine/admin/logging/overview/) using the `--log-driver` option if you wish to consume the container logs differently. In the default configuration docker uses the `json-file` driver.
+
+# Customizing this image
+
+Refer to the [customize instructions](./custom/README.md) for more information about how to extend this image.
 
 # Maintenance
 
