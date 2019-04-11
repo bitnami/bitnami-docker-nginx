@@ -1,10 +1,10 @@
 # Customizing Bitnami NGINX Docker Image
 
-The Bitnami NGINX Docker image is designed to be extended so it can be used as the base image for your custom web apps containers.
+The Bitnami NGINX Docker image is designed to be extended so it can be used as the base image for your custom web applications.
 
 ## Understand how the image works
 
-The Bitnami NGINX Docker image is built using a Dockerfile wit the structure below:
+The Bitnami NGINX Docker image is built using a Dockerfile with the structure below:
 
 ```Dockerfile
 FROM bitnami/minideb-extras-base
@@ -32,7 +32,7 @@ We can identify several sections within the Dockerfile:
 - A section where all the required components are installed.
 - A section where the the assets are prepared.
 - A section where the env. variables, the ports to be exposed, the working directory and the user are defined.
-  - Note that once the user is set to 1001, unprivileged actions cannot be done anymore.
+  - Note that once the user is set to 1001, unprivileged commands cannot be executed anymore.
 - A section where the entrypoint and command used to start the service are declared.
   - Take into account these actions are not executed until the container is started.
 
