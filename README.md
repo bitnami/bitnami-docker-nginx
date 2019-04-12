@@ -75,7 +75,7 @@ $ docker build -t bitnami/nginx:latest https://github.com/bitnami/bitnami-docker
 
 # Hosting a static website
 
-This NGINX Open Source image exposes a volume at `/app`. Content mounted here is served by the default catch-all virtual host.
+This NGINX Open Source image exposes a volume at `/app`. Content mounted here is served by the default catch-all server block.
 
 ```bash
 $ docker run -v /path/to/app:/app bitnami/nginx:latest
@@ -120,13 +120,13 @@ Access your web server in the browser by navigating to [http://localhost:9000](h
 
 # Configuration
 
-## Adding custom virtual hosts
+## Adding custom server blocks
 
-The default `nginx.conf` includes virtual hosts placed in `/opt/bitnami/nginx/conf/vhosts/`. You can mount a `my_vhost.conf` file containing your custom virtual hosts at this location.
+The default `nginx.conf` includes server blocks placed in `/opt/bitnami/nginx/conf/conf.d/server_blocks/`. You can mount a `my_server_block.conf` file containing your custom server block at this location.
 
-For example, in order add a vhost for `www.example.com`:
+For example, in order add a server block for `www.example.com`:
 
-# Step 1: Write your `my_vhost.conf` file with the following content.
+# Step 1: Write your `my_server_block.conf` file with the following content.
 
 ```nginx
 server {
@@ -141,7 +141,7 @@ server {
 
 ```bash
 $ docker run --name nginx \
-  -v /path/to/my_vhost.conf:/opt/bitnami/nginx/conf/vhosts/my_vhost.conf:ro \
+  -v /path/to/my_server_block.conf:/opt/bitnami/nginx/conf/conf.d/server_blocks/my_server_block.conf:ro \
   bitnami/nginx:latest
 ```
 
@@ -156,7 +156,7 @@ services:
     ports:
       - '80:8080'
     volumes:
-      - /path/to/my_vhost.conf:/opt/bitnami/nginx/conf/vhosts/my_vhost.conf:ro
+      - /path/to/my_server_block.conf:/opt/bitnami/nginx/conf/conf.d/server_blocks/my_server_block.conf:ro
 ```
 
 ## Using custom SSL certificates
@@ -173,9 +173,9 @@ $ cp /path/to/certfile.crt /path/to/nginx-persistence/certs/server.crt
 $ cp /path/to/keyfile.key  /path/to/nginx-persistence/certs/server.key
 ```
 
-### Step 2: Provide a custom Virtual Host for SSL connections
+### Step 2: Provide a custom Server Block for SSL connections
 
-Write your `my_vhost.conf` file with the SSL configuration and the relative path to the certificates:
+Write your `my_server_block.conf` file with the SSL configuration and the relative path to the certificates:
 
 ```nginx
   server {
@@ -203,7 +203,7 @@ Run the NGINX Open Source image, mounting the certificates directory from your h
 
 ```bash
 $ docker run --name nginx \
-  -v /path/to/my_vhost.conf:/opt/bitnami/nginx/conf/vhosts/my_vhost.conf:ro \
+  -v /path/to/my_server_block.conf:/opt/bitnami/nginx/conf/conf.d/server_blocks/my_server_block.conf:ro \
   -v /path/to/nginx-persistence/certs:/certs \
   bitnami/nginx:latest
 ```
@@ -221,7 +221,7 @@ services:
     - '443:8443'
     volumes:
     - /path/to/nginx-persistence/certs:/certs
-    - /path/to/my_vhost.conf:/opt/bitnami/nginx/conf/vhosts/my_vhost.conf:ro
+    - /path/to/my_server_block.conf:/opt/bitnami/nginx/conf/conf.d/server_blocks/my_server_block.conf:ro
 ```
 
 ## Full configuration
@@ -251,7 +251,7 @@ services:
 
 # Reverse proxy to other containers
 
-NGINX can be used to reverse proxy to other containers using Docker's linking system. This is particularly useful if you want to serve dynamic content through an NGINX frontend. To do so, [add a virtual host](#adding-custom-virtual-hosts) like the following in the `/opt/bitnami/nginx/conf/vhosts/` folder:
+NGINX can be used to reverse proxy to other containers using Docker's linking system. This is particularly useful if you want to serve dynamic content through an NGINX frontend. To do so, [add a server block](#adding-custom-server-blocks) like the following in the `/opt/bitnami/nginx/conf/conf.d/server_blocks/` folder:
 
 ```
 server {

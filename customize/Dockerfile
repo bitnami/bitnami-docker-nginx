@@ -5,10 +5,8 @@ LABEL maintainer "Bitnami <containers@bitnami.com>"
 USER 0
 RUN install_packages vim
 
-## Modify NGINX config file to include my custom configuration
-RUN sed -i -r "s#((\s+)include(\s+)mime.types;)#\1\n\2include\3\"custom/*.conf\";#g" /opt/bitnami/nginx/conf/nginx.conf
-RUN ln -sf /custom /opt/bitnami/nginx/conf/custom
-VOLUME /custom
+## Modify 'worker_connections' on NGINX config file to '512'
+RUN sed -i -r "s#(\s+)worker_connections(\s+)[0-9]+;#\1worker_connections\2512;#g" /opt/bitnami/nginx/conf/nginx.conf
 
 ## Modify the ports used by NGINX by default
 ENV NGINX_HTTP_PORT_NUMBER=8181

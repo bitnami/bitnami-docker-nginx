@@ -41,7 +41,7 @@ We can identify several sections within the Dockerfile:
 Before extending this image, please note there are certain configuration settings you can modify using the original image:
 
 - Settings that can be adapted using environment variables. For instance, you can change the port used by NGINX for HTTP setting the environment variable `NGINX_HTTP_PORT_NUMBER`.
-- [Adding custom virtual hosts](../#adding-custom-virtual-hosts).
+- [Adding custom server blocks](../#adding-custom-server-blocks).
 - [Replacing the 'nginx.conf' file](../#full-configuration).
 - [Using custom SSL certificates](../#using-custom-ssl-certificates).
 

@@ -10,10 +10,10 @@
 eval "$(nginx_env)"
 
 # Ensure non-root user has write permissions on a set of directories
-for dir in "/bitnami" "$NGINX_VOLUME" "$NGINX_CONFDIR" "${NGINX_CONFDIR}/bitnami" "${NGINX_CONFDIR}/vhosts" "$NGINX_BASEDIR" "$NGINX_TMPDIR"; do
+for dir in "/bitnami" "$NGINX_VOLUME" "${NGINX_CONFDIR}/conf.d/server_blocks" "${NGINX_CONFDIR}/bitnami" "$NGINX_BASEDIR" "$NGINX_TMPDIR"; do
     ensure_dir_exists "$dir"
-    chmod -R g+rwX "$dir"
 done
+chmod -R g+rwX "$NGINX_VOLUME" "$NGINX_CONFDIR" "$NGINX_TMPDIR"
 # Create NGINX default configuration
 nginx_default_config
 # Unset HTTP_PROXY header to protect vs HTTPPOXY vulnerability

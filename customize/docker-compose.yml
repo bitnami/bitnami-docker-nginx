@@ -9,9 +9,9 @@ services:
     depends_on:
       - cloner
     volumes:
-      - ./config/my_vhost.conf:/opt/bitnami/nginx/conf/vhosts/my_vhost.conf:ro
+      - ./config/my_server_block.conf:/opt/bitnami/nginx/conf/conf.d/server_blocks/my_server_block.conf:ro
+      - ./config/proxy.conf:/opt/bitnami/nginx/conf/conf.d/proxy.conf:ro
       - ./certs:/certs
-      - ./config/proxy.conf:/custom/proxy.conf:ro
       - data:/app
   cloner:
     image: 'bitnami/git:latest'

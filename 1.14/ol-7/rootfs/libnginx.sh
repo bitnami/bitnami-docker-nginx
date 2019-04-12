@@ -198,7 +198,7 @@ nginx_initialize() {
         exit 1
     fi
     if ! is_dir_empty "$NGINX_VOLUME/conf/vhosts"; then
-        error "Custom vhosts config files were found inside '$NGINX_VOLUME/conf/vhosts'. This configuration is not supported anymore. Please mount your custom vhosts config files at '${NGINX_CONFDIR}/nginx.conf' instead."
+        error "Custom server blocks files were found inside '$NGINX_VOLUME/conf/vhosts'. This configuration is not supported anymore. Please mount your custom server blocks config files at '${NGINX_CONFDIR}/conf.d/server_blocks' instead."
         exit 1
     fi
 
@@ -206,7 +206,7 @@ nginx_initialize() {
         debug "Ensure NGINX daemon user/group exists..."
         ensure_user_exists "$NGINX_DAEMON_USER" "$NGINX_DAEMON_GROUP"
         if [[ -n "${NGINX_DAEMON_USER:-}" ]]; then
-            chown "${NGINX_DAEMON_USER:-}" "${NGINX_CONFDIR}" "${NGINX_CONFDIR}/vhosts" "$NGINX_TMPDIR"
+            chown -R "${NGINX_DAEMON_USER:-}" "${NGINX_CONFDIR}" "${NGINX_CONFDIR}/conf.d" "$NGINX_TMPDIR"
         fi
     fi
 

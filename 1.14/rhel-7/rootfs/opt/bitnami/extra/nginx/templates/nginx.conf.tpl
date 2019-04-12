@@ -11,6 +11,7 @@ events {
 
 http {
     include       mime.types;
+    include       "conf.d/*.conf";
     default_type  application/octet-stream;
     log_format    main '$remote_addr - $remote_user [$time_local] '
                        '"$request" $status  $body_bytes_sent "$http_referer" '
@@ -35,7 +36,7 @@ http {
     keepalive_timeout  65;
     ssl_protocols      TLSv1 TLSv1.1 TLSv1.2;
 
-    include  "{{NGINX_CONFDIR}}/vhosts/*.conf";
+    include  "{{NGINX_CONFDIR}}/conf.d/server_blocks/*.conf";
 
     # HTTP Server
     server {
