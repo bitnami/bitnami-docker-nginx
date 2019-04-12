@@ -157,16 +157,14 @@ nginx_prepare_directories() {
 nginx_validate() {
     info "Validating settings in NGINX_* env vars..."
 
-    for var in "NGINX_HTTP_PORT_NUMBER" "NGINX_HTTPS_PORT_NUMBER"; do
-        local validate_port_args=()
-        ! am_i_root && validate_port_args+=("-unprivileged")
-        if [[ -n "${!var:-}" ]]; then
-            if ! err=$(validate_port "${validate_port_args[@]}" "${!var:-}"); then
-                error "An invalid port was specified in the environment variable $var: $err"
-                exit 1
-            fi
+    local validate_port_args=()
+    ! am_i_root && validate_port_args+=("-unprivileged")
+    if [[ -n "${NGINX_HTTP_PORT_NUMBER:-}" ]]; then
+        if ! err=$(validate_port "${validate_port_args[@]}" "${NGINX_HTTP_PORT_NUMBER:-}"); then
+            error "An invalid port was specified in the environment variable NGINX_HTTP_PORT_NUMBER: $err"
+            exit 1
         fi
-    done
+    fi
 
     for var in "NGINX_DAEMON_USER" "NGINX_DAEMON_GROUP"; do
         if am_i_root; then
@@ -194,29 +192,27 @@ nginx_validate() {
 nginx_initialize() {
     info "Initializing NGINX..."
 
-    if am_i_root; then
-        debug "Ensure NGINX daemon user/group exists..."
-        ensure_user_exists "$NGINX_DAEMON_USER" "$NGINX_DAEMON_GROUP"
-    fi
     # Persisted configuration files from old versions
     if [[ -f "$NGINX_VOLUME/conf/nginx.conf" ]]; then
         error "A 'nginx.conf' file was found inside '${NGINX_VOLUME}/conf'. This configuration is not supported anymore. Please mount the configuration file at '${NGINX_CONFDIR}/nginx.conf' instead."
         exit 1
     fi
     if ! is_dir_empty "$NGINX_VOLUME/conf/vhosts"; then
-        warn "Custom vhosts config files were found in a legacy directory: $NGINX_VOLUME/conf/vhosts"
-        warn "  Please use ${NGINX_CONFDIR}/vhosts instead."
-        warn "  Please note custom vhosts config files will not be persisted anymore."
-        debug "Moving vhosts config files to new location..."
-        cp -r "$NGINX_VOLUME/conf/vhosts" "$NGINX_CONFDIR"
+        error "Custom vhosts config files were found inside '$NGINX_VOLUME/conf/vhosts'. This configuration is not supported anymore. Please mount your custom vhosts config files at '${NGINX_CONFDIR}/nginx.conf' instead."
+        exit 1
     fi
-    if am_i_root && [[ -n "${NGINX_DAEMON_USER:-}" ]]; then
-        chown "${NGINX_DAEMON_USER:-}" "${NGINX_CONFDIR}" "${NGINX_CONFDIR}/vhosts" "$NGINX_TMPDIR"
+
+    if am_i_root; then
+        debug "Ensure NGINX daemon user/group exists..."
+        ensure_user_exists "$NGINX_DAEMON_USER" "$NGINX_DAEMON_GROUP"
+        if [[ -n "${NGINX_DAEMON_USER:-}" ]]; then
+            chown "${NGINX_DAEMON_USER:-}" "${NGINX_CONFDIR}" "${NGINX_CONFDIR}/vhosts" "$NGINX_TMPDIR"
+        fi
     fi
 
     debug "Updating 'nginx.conf' based on user configuration..."
     if [[ -n "${NGINX_HTTP_PORT_NUMBER:-}" ]]; then
       # TODO: find an appropriate NGINX parser to avoid 'sed calls'
-      sed -i -r "s/(listen\s+)[0-9]{1,4};/\1${NGINX_HTTP_PORT_NUMBER};/g" ${NGINX_CONFDIR}/nginx.conf
+      sed -i -r "s/(listen\s+)[0-9]{1,5};/\1${NGINX_HTTP_PORT_NUMBER};/g" ${NGINX_CONFDIR}/nginx.conf
     fi
 }
