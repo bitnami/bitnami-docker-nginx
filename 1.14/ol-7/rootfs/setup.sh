@@ -18,5 +18,5 @@ eval "$(nginx_env)"
 nginx_validate
 # Ensure NGINX is stopped when this script ends
 trap "nginx_stop" EXIT
-# Setup NGINX
-nginx_setup
+# Initialize NGINX
+nginx_initialize

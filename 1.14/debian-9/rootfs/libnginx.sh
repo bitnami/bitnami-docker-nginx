@@ -122,7 +122,7 @@ nginx_default_config() {
 # Returns:
 #   None
 #########################
-nginx_protect_httpoxy_vuln() {
+nginx_patch_httpoxy_vulnerability() {
     debug "Unsetting HTTP_PROXY header..."
     echo '# Unset the HTTP_PROXY header' >> "${NGINX_CONFDIR}/fastcgi_params"
     echo 'fastcgi_param  HTTP_PROXY         "";' >> "${NGINX_CONFDIR}/fastcgi_params"
@@ -157,16 +157,14 @@ nginx_prepare_directories() {
 nginx_validate() {
     info "Validating settings in NGINX_* env vars..."
 
-    for var in "NGINX_HTTP_PORT_NUMBER" "NGINX_HTTPS_PORT_NUMBER"; do
-        local validate_port_args=()
-        ! am_i_root && validate_port_args+=("-unprivileged")
-        if [[ -n "${!var:-}" ]]; then
-            if ! err=$(validate_port "${validate_port_args[@]}" "${!var:-}"); then
-                error "An invalid port was specified in the environment variable $var: $err"
-                exit 1
-            fi
+    local validate_port_args=()
+    ! am_i_root && validate_port_args+=("-unprivileged")
+    if [[ -n "${NGINX_HTTP_PORT_NUMBER:-}" ]]; then
+        if ! err=$(validate_port "${validate_port_args[@]}" "${NGINX_HTTP_PORT_NUMBER:-}"); then
+            error "An invalid port was specified in the environment variable NGINX_HTTP_PORT_NUMBER: $err"
+            exit 1
         fi
-    done
+    fi
 
     for var in "NGINX_DAEMON_USER" "NGINX_DAEMON_GROUP"; do
         if am_i_root; then
@@ -183,7 +181,7 @@ nginx_validate() {
 }
 
 ########################
-# Setup NGINX
+# Initialize NGINX
 # Globals:
 #   NGINX_*
 # Arguments:
@@ -191,7 +189,7 @@ nginx_validate() {
 # Returns:
 #   None
 #########################
-nginx_setup() {
+nginx_initialize() {
     info "Initializing NGINX..."
 
     if am_i_root; then
@@ -216,6 +214,7 @@ nginx_setup() {
 
     debug "Updating 'nginx.conf' based on user configuration..."
     if [[ -n "${NGINX_HTTP_PORT_NUMBER:-}" ]]; then
+      # TODO: find an appropriate NGINX parser to avoid 'sed calls'
       sed -i -r "s/(listen\s+)[0-9]{1,4};/\1${NGINX_HTTP_PORT_NUMBER};/g" ${NGINX_CONFDIR}/nginx.conf
     fi
 }

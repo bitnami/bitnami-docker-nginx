@@ -17,7 +17,7 @@ done
 # Create NGINX default configuration
 nginx_default_config
 # Unset HTTP_PROXY header to protect vs HTTPPOXY vulnerability
-nginx_protect_httpoxy_vuln
+nginx_patch_httpoxy_vulnerability
 # Prepare directories for users to mount its static files and certificates
 nginx_prepare_directories
 # Redirect all logging to stdout/stderr

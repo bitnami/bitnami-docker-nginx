@@ -122,7 +122,7 @@ nginx_default_config() {
 # Returns:
 #   None
 #########################
-nginx_protect_httpoxy_vuln() {
+nginx_patch_httpoxy_vulnerability() {
     debug "Unsetting HTTP_PROXY header..."
     echo '# Unset the HTTP_PROXY header' >> "${NGINX_CONFDIR}/fastcgi_params"
     echo 'fastcgi_param  HTTP_PROXY         "";' >> "${NGINX_CONFDIR}/fastcgi_params"
@@ -183,7 +183,7 @@ nginx_validate() {
 }
 
 ########################
-# Setup NGINX
+# Initialize NGINX
 # Globals:
 #   NGINX_*
 # Arguments:
@@ -191,7 +191,7 @@ nginx_validate() {
 # Returns:
 #   None
 #########################
-nginx_setup() {
+nginx_initialize() {
     info "Initializing NGINX..."
 
     if am_i_root; then
@@ -216,6 +216,7 @@ nginx_setup() {
 
     debug "Updating 'nginx.conf' based on user configuration..."
     if [[ -n "${NGINX_HTTP_PORT_NUMBER:-}" ]]; then
+      # TODO: find an appropriate NGINX parser to avoid 'sed calls'
       sed -i -r "s/(listen\s+)[0-9]{1,4};/\1${NGINX_HTTP_PORT_NUMBER};/g" ${NGINX_CONFDIR}/nginx.conf
     fi
 }
