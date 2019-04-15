@@ -18,8 +18,7 @@ ENV BITNAMI_APP_NAME="nginx" \
     NAMI_PREFIX="/.nami" \
     PATH="/opt/bitnami/nginx/sbin:$PATH"
 EXPOSE 8080 8443
-VOLUME /app
-VOLUME /certs
+VOLUME [ "/app" "/certs" ]
 WORKDIR /app
 USER 1001
 
