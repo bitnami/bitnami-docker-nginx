@@ -20,10 +20,10 @@ RUN /postunpack.sh
 ENV BITNAMI_APP_NAME="nginx" \
     BITNAMI_IMAGE_VERSION="1.16.1-debian-9-r41" \
     NAMI_PREFIX="/.nami" \
-    PATH="/opt/bitnami/nginx/sbin:$PATH"
+    PATH="/opt/bitnami/nginx/sbin:$PATH" \
+    NGINX_HTTP_PORT_NUMBER=8080
 
-EXPOSE 8080 8443
-
+EXPOSE ${NGINX_HTTP_PORT_NUMBER}
 WORKDIR /app
 USER 1001
 ENTRYPOINT [ "/entrypoint.sh" ]
